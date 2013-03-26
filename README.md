@@ -13,7 +13,7 @@ The following directories:
     - The backup script is the first “fancy” script I've ever written in any language. It officially crosses the “fancy” threshold with its $(date +%m-%d-%y_%I-%M%P) bit; I found that variable out there on the internet and it was love at first grok. That ls command at the end of line 3 needs work. Any of the many smarter scripters could take one look at that and tell that starting a backup at the end of a minute will cause the ls to fail. One of these days I'll learn regular expressions and fix it, but until then I'm fine with line 3.5 *usually* working. 
     - The update script is fairly simple, but probably saves the most time out of all three.
 
-
+ 
 - tempmon -- Monitor system temperature with lm-sensors & hddtemp.
 
     - First install and configure with ``sudo apt-get install lm-sensors hddtemp && sudo sensors-detect``
