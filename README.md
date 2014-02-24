@@ -19,6 +19,9 @@ The following directories:
     - First install and configure with ``sudo apt-get install lm-sensors hddtemp && sudo sensors-detect``
     - Then run ``sudo ./temp.sh``. It has to be run as root because hddtemp requires root. I'm a noob, and while I know that things should not be run as root when they don't absolutely *have* to be, I still haven't been burned bad enough to care. Therefore, both watch and sensors run as root, though they don't need it.
     - temp.sh assumes that sensors.sh is in the same directory. There's probably a way to compact this into one script, but I don't know how, and this works well for me.
+    
+
+- automation -- Basic shell scripts to make frequent tasks slightly quicker. 
 
 
 Things I'd like to add
