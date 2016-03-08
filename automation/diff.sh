@@ -1,0 +1,1 @@
+diff --side-by-side <( find folder1/ -name "*" -exec md5sum -b {} \; | sort | awk -F'[/ ]' '{ print $1 "\t" $3 }') <( find folder2/ -name "*" -exec md5sum -b {} \; | sort | awk -F'[/ ]' '{ print $1 "\t" $3}' )
