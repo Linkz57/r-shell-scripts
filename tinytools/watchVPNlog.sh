@@ -1,1 +1,1 @@
-while true ; do grep "`date +%b\ %d\ %H`" /var/log/openvpn.log ; sleep 3 ; done
+while true ; do clear ; grep "`date +%b\ %d\ %H`" /var/log/openvpn.log ; sleep 5 ; done
