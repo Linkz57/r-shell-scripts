@@ -1,7 +1,7 @@
 #!/bin/bash
 
 ## service_check.sh
-## version 1.1
+## version 1.2
 ## Written by Tyler Francis on 2016-09-27 for Jelec USA.
 
 ## A list of everyone you want to email when a problem occurs, separated by spaces.
@@ -20,7 +20,6 @@ function checkNxfilter {
 	## Since NxFilter does some DNS work for us, I can't trust hostname resolution, so I'll use the IP instead.
 	if ssh $3@$2 "systemctl is-active nxfilter.service" ; then
 		echo "NxFilter seems fine on $1." >> service_check.log
-#		return 0
 	else
 		## section header for email
 		echo "Problem found with Nx Filter on $1." >> service_check.log
@@ -41,7 +40,6 @@ function checkNxfilter {
 	echo "" >> service_check.log
 }
 
-#returnValue=($?)
 
 
 ## now that the function has been defined, run it using the following three arguments each separated by a single space.
@@ -74,11 +72,14 @@ if cat service_check.log | grep "Problem found" ; then
 	fi
 	
 else
-	## Remove the email frequency counter.
 	## This bit only runs if none of the above servers failed their checks,
-	## which means either the previous problem was fixed, or there was no previous problem.
+	## which means either the previous problem was fixed, or there was no previous problem. Let's find out which of those is true.
+	if test -e "emailFrequency.txt" ; then
+		## If there is no problem now, but the last time this script ran there was a problem, then a problem has been solved.
+		echo "Success: all services monitored by service_check.sh have been restored" | mail -s "Success: all services monitored by service_check.sh have been restored" $alertEmail
+	fi
+	## Remove the email frequency counter.
 	\rm emailFrequency.txt
-	## TODO: first check if this file exists (meaning there used to be a problem) and if so send an email saying the issue cleared up, like Nagios does.
 fi
 
 
@@ -86,3 +87,10 @@ fi
 ## on Debian, I set up the mailer with
 ##   apt install exim4-daemon-light mailutils && dpkg-reconfigure exim4-config
 ## now I can pipe things to "mail" and it works great.
+## 
+## I configured exim4 to send mail via Gmail's SMTP servers
+## I then set up a Google Voice account, which lets me send SMS messages via email.
+## Once you set up a Google Voice number, by default, GV will send you an email when you receive an SMS
+## Send a text from your cell to your new GV number, and you'll get an email from an address that looks like
+## [your gv number].[number that just sent an SMS].[seemingly random characters]@txt.voice.google.com
+## any email you send to that address from your Gmail account will be received as an SMS on your cell.
