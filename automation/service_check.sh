@@ -1,7 +1,7 @@
 #!/bin/bash
 
 ## service_check.sh
-## version 1.4
+## version 1.5
 ## Written by Tyler Francis on 2016-09-27 for Jelec USA.
 
 ## A list of everyone you want to email when a problem occurs, separated by spaces.
@@ -15,6 +15,11 @@ frequency=3600
 ## the leading slash makes sure no goofy aliases of rm are being used.
 \rm service_check.email
 \rm service_check.sms
+
+## identify this script in emails, 
+## in case you stop liking it in a few years and want to change or disable it.
+SCRIPTPATH=`pwd -P`/service_check.sh
+hostname=`hostname`
 
 function checkNxfilter {
 	## Check the machine in question to make sure NxFilter is running
@@ -47,7 +52,7 @@ function checkNxfilter {
 	echo "" >> service_check.email
 }
 
-
+echo "If I'm wrong or wasting your attention, feel free to edit me at $SCRIPTPATH on $hostname" >> service_check.email
 
 ## now that the function has been defined, run it using the following three arguments each separated by a single space.
 ## Function # hostname # ip address # username
