@@ -1,7 +1,7 @@
 #!/bin/bash
 
 ## service_check.sh
-## version 1.5
+## version 1.5.1
 ## Written by Tyler Francis on 2016-09-27 for Jelec USA.
 
 ## A list of everyone you want to email when a problem occurs, separated by spaces.
@@ -13,8 +13,8 @@ frequency=3600
 
 ## remove the old log, since it was probably already emailed out.
 ## the leading slash makes sure no goofy aliases of rm are being used.
-\rm service_check.email
-\rm service_check.sms
+\rm -f service_check.email
+\rm -f service_check.sms
 
 ## identify this script in emails, 
 ## in case you stop liking it in a few years and want to change or disable it.
@@ -52,7 +52,6 @@ function checkNxfilter {
 	echo "" >> service_check.email
 }
 
-echo "If I'm wrong or wasting your attention, feel free to edit me at $SCRIPTPATH on $hostname" >> service_check.email
 
 ## now that the function has been defined, run it using the following three arguments each separated by a single space.
 ## Function # hostname # ip address # username
@@ -60,6 +59,7 @@ checkNxfilter mahserver 123.456.7.8 username
 checkNxfilter urserver 987.6.54.321 username
 ## argument       $1          $2        $3
 
+echo "If this email is wrong or wasting your attention, feel free to make edits at $SCRIPTPATH on $hostname" >> service_check.email
 
 ## now use that text file I was creating during each running of the function as the body of an email.
 ## but only if an actual error was found.
@@ -95,7 +95,7 @@ else
 		echo "Success: all services monitored by service_check.sh have been restored" | mail $alertSMS
 	fi
 	## Remove the email frequency counter.
-	\rm emailFrequency.txt
+	\rm -f emailFrequency.txt
 fi
 
 
