@@ -70,7 +70,7 @@ if cat service_check.email | grep "Problem found" ; then
 		## This file exists, meaning this is an ongoing problem.
 		read first < emailFrequency.txt
 		now=`\date +%s`
-		if [[ $(($now - $first)) < $frequency ]] ; then
+		if [ $(($now - $first)) > $frequency ] ; then
 			## if this is true, then the specified time has elapsed, and another email should be sent.
 			cat service_check.email | mail -s "Error: Some important services aren't running" $alertEmail
 			cat service_check.sms | mail $alertSMS
