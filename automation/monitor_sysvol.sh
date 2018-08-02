@@ -3,7 +3,7 @@
 ## make a hash of all files in SYSVOL and compare it to the previous hash, which we assume happened last hour.
 ## Email a human if anything changes.
 ##
-## version 1.0
+## version 1.1
 
 mailaddress="me@domain.biz"
 workingDirectory="${0%/*}"
@@ -20,7 +20,7 @@ fi
 
 
 
-if mount | grep "/SYSVOL on /mnt/sysvol" > /dev/null ; then
+if [ -r /mnt/sysvol/*/Policies ] ; then
         if mv -f $workingDirectory/sysvol.sha1 $workingDirectory/sysvol.sha1.lasthour ; then
                 true
         else
