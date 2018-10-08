@@ -11,6 +11,14 @@ export SUDO_EDITOR=/usr/bin/kate
 
 
 
+## thanks to Chris Marshall AKA codegoalie for this alert alias
+## https://gist.github.com/codegoalie/975690/82d6198b65fdf00c84f93e01f7e6cdb2f22fe524
+## Add an "alert" alias for long running commands.  Use like so:
+##   sleep 10; alert
+alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
+
+
+
 
 ## Thanks to Daniel Weibel at https://gist.github.com/weibeld/f3b6e6187029924a9b3d
 ## for giving an exit code before my prompt, without having to run Byobu.
