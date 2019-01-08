@@ -48,8 +48,13 @@ set_prompt() {
   # Set prompt content
 #  PS1="\u@\h:\w$\[$reset\] "
 ## I don't like green as much as Mr. Weibel, so I'm going to steal and modify Byobu's $PS1
-  PS1="${debian_chroot:+($debian_chroot)}\[\e[31m\]\[\e[38;5;245m\]\u\[\e[00m\]@\[\e[38;5;172m\]\h\[\e[00m\]:\[\e[00;36m\]\w\[\e[00m\] "
-  
+  if hostname | grep laptop >/dev/null ; then
+    ## random bit stolen from
+    ## https://www.commandlinefu.com/commands/view/12548/generate-a-random-text-color-in-bash
+	  PS1="${debian_chroot:+($debian_chroot)}\[\e[31m\]\[\e[38;5;245m\]\u\[\e[00m\]@\[\e[38;5;3$(( $RANDOM * 6 / 32767 + 1 ))m\]\h\[\e[00m\]:\[\e[00;36m\]\w\[\e[00m\] "
+  else
+	  PS1="${debian_chroot:+($debian_chroot)}\[\e[31m\]\[\e[38;5;245m\]\u\[\e[00m\]@\[\e[38;5;3m\]\h\[\e[00m\]:\[\e[00;36m\]\w\[\e[00m\] "
+  fi
   # If exit code of last command is non-zero, prepend this code to the prompt
   [[ "$ex" -ne 0 ]] && PS1="$ex $PS1"
   # Set colour of prompt
