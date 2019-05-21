@@ -6,6 +6,7 @@ alias date='date +%Y-%m-%d_%H-%M'
 alias t='\date +%H:%M'
 alias ssh='ssh -o VisualHostKey=yes'
 alias count='wc -l'
+alias df='df -x squashfs
 alias password="strings -es < /dev/urandom | head | tr -cd '[[:alnum:]]._-' ; printf '\n'"
 export SUDO_EDITOR=/usr/bin/kate
 
