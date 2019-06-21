@@ -1,8 +1,15 @@
 #!/usr/bin/env python
+## This is a Python 2 script, the vast majority of which I didn't write.
+##
 ## Thanks to Ryan Paul for pretty much all of this. I know nothing about Python
 ## https://arstechnica.com/information-technology/2007/09/using-the-tomboy-d-bus-interface/
+##
+## except for the two datetime lines, which came from Eliot
+## https://www.saltycrane.com/blog/2008/06/how-to-get-current-date-and-time-in/
 
-import dbus, os
+import dbus, os, datetime
+
+now = datetime.datetime.now()
 
 os.popen("/bin/sh -c 'if pgrep tomboy ; then exit ; else /usr/bin/tomboy & /bin/sleep 1 ; fi'")
 
@@ -14,7 +21,7 @@ tomboy = dbus.Interface(obj, "org.gnome.Tomboy.RemoteControl")
 
 new_note = tomboy.CreateNote()
 tomboy.DisplayNote(new_note)
-
+tomboy.SetNoteContents(new_note,"Thinkin bout stuff - " + str(now.strftime("%Y-%m-%d %H:%M")) + "\n\n")
 
 
 ## Below are supplemental files I use in my environment.
