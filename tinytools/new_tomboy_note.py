@@ -11,7 +11,7 @@ import dbus, os, datetime
 
 now = datetime.datetime.now()
 
-os.popen("/bin/sh -c 'if pgrep tomboy ; then exit ; else /usr/bin/tomboy & /bin/sleep 1 ; fi'")
+os.popen("/bin/sh -c 'if pgrep tomboy ; then exit ; else /usr/bin/tomboy & until pgrep tomboy ; do sleep .2 ; done ; sleep .5 ; fi'")
 
 
 bus = dbus.SessionBus()
