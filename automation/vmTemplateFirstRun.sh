@@ -1,6 +1,6 @@
 #!/bin/bash
 ## vmTemplateFirstRun.sh
-## Version 1.1
+## Version 2.4
 ##
 ## I want to run this script to safely make a clone of a machine
 ## and I want this clone to live safely on the same network with many of its other clones, concurrently
@@ -58,17 +58,29 @@ if hostname | grep -P '(^|\s)\Ktemplatemachn(?=\s|$)' > /dev/null ; then
 
 
 	## set up static IP
-	echo "Changing IP address..."
-	sudo cp /etc/network/interfaces /etc/network/interfaces.$(\date +%Y-%m-%d_%H-%M).bak
-	firstBitOfInterfaces=$(head /etc/network/interfaces -n$(grep -n "inet static" /etc/network/interfaces | awk -F ':' '{ print $1 }'))
-	echo "$firstBitOfInterfaces" | sudo tee /etc/network/interfaces
-	echo "address $iaddress" | sudo tee -a /etc/network/interfaces
-	echo "netmask 255.255.255.0" | sudo tee -a /etc/network/interfaces
-	echo "network $(echo $iaddress | awk -F "." '{print $1}').$(echo $iaddress | awk -F "." '{print $2}').$(echo $iaddress | awk -F "." '{print $3}').0" | sudo tee -a /etc/network/interfaces
-	echo "broadcast $(echo $iaddress | awk -F "." '{print $1}').$(echo $iaddress | awk -F "." '{print $2}').$(echo $iaddress | awk -F "." '{print $3}').255" | sudo tee -a /etc/network/interfaces
-	echo "gateway $(echo $iaddress | awk -F "." '{print $1}').$(echo $iaddress | awk -F "." '{print $2}').$(echo $iaddress | awk -F "." '{print $3}').1" | sudo tee -a /etc/network/interfaces
-	echo "dns-nameservers 10.0.0.1" | sudo tee -a /etc/network/interfaces
-	echo "dns-search mahworkgroup.egg" | sudo tee -a /etc/network/interfaces
+	## find a working NIC
+	workingNics=$(ip link | grep "<BROADCAST,MULTICAST,UP,LOWER_UP>" | awk -F'[ :]' '{print $3}')
+	echo "I found the following NICs are plugged in and ready to roll, but if there's more than one I'm just going to use the first."
+	echo "$workingNics"
+	workingNicsFirst=$(echo "$workingNics" | head -n1)
+	if [ -d /etc/netplan ] ; then
+		echo "Changing IP address for this Ubuntu 18.04 or later machine..."
+		sudo mv /etc/netplan/01-netcfg.yaml /etc/netplan/01-netcfg.yaml.original
+		printf "network:\n  version: 2\n  renderer: networkd\n  ethernets:\n    $workingNicsFirst:\n      addresses: [ $iaddress/24 ]\n      gateway4: $(echo $iaddress | awk -F "." '{print $1}').$(echo $iaddress | awk -F "." '{print $2}').$(echo $iaddress | awk -F "." '{print $3}').1\n      nameservers:\n          search: [ mahworkgroup.egg ]\n          addresses:\n              - \"10.0.0.1\"\n              - \"10.0.0.2\"\n              - \"10.0.0.3\"" | sudo tee /etc/netplan/01-netcfg.yaml
+	else
+		echo "Changing IP address for this Ubuntu 16.04 or earlier machine..."
+		sudo cp /etc/network/interfaces /etc/network/interfaces.$(\date +%Y-%m-%d_%H-%M).bak
+		firstBitOfInterfaces=$(head /etc/network/interfaces -n$(grep -n "inet static" /etc/network/interfaces | awk -F ':' '{ print $1 }'))
+		echo "$firstBitOfInterfaces" | sudo tee /etc/network/interfaces
+		echo "address $iaddress" | sudo tee -a /etc/network/interfaces
+		echo "netmask 255.255.255.0" | sudo tee -a /etc/network/interfaces
+		echo "network $(echo $iaddress | awk -F "." '{print $1}').$(echo $iaddress | awk -F "." '{print $2}').$(echo $iaddress | awk -F "." '{print $3}').0" | sudo tee -a /etc/network/interfaces
+		echo "broadcast $(echo $iaddress | awk -F "." '{print $1}').$(echo $iaddress | awk -F "." '{print $2}').$(echo $iaddress | awk -F "." '{print $3}').255" | sudo tee -a /etc/network/interfaces
+		echo "gateway $(echo $iaddress | awk -F "." '{print $1}').$(echo $iaddress | awk -F "." '{print $2}').$(echo $iaddress | awk -F "." '{print $3}').1" | sudo tee -a /etc/network/interfaces
+		echo "dns-nameservers 10.0.0.1" | sudo tee -a /etc/network/interfaces
+		echo "dns-search mahworkgroup.egg" | sudo tee -a /etc/network/interfaces
+	fi
+	
 
 
 	## generate unique SSH keys
